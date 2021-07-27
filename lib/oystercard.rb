@@ -3,6 +3,7 @@ attr_reader :balance
 
 MAX_LIMIT = 90
 MIN_LIMIT = 1
+MIN_FARE = 0
 
   def initialize(balance=0)
     @balance = balance
@@ -27,6 +28,7 @@ MIN_LIMIT = 1
   end
 
   def touch_out
+    deduct (MIN_FARE)
     @in_journey = false
   end
 
