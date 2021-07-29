@@ -37,7 +37,7 @@ describe Oystercard do
   it 'can touch out' do
     subject.top_up(1)
     subject.touch_in(station)
-    subject.touch_out
+    subject.touch_out(station)
     expect(subject).not_to be_in_journey
   end
 
@@ -49,7 +49,7 @@ describe Oystercard do
     min_fare = Oystercard::MIN_FARE
     subject.top_up(1)
     subject.touch_in(station)
-    expect {subject.touch_out}.to change{subject.balance}.by(-min_fare)
+    expect {subject.touch_out(station)}.to change{subject.balance}.by(-min_fare)
   end 
 
   it 'saves entry station' do
@@ -57,5 +57,27 @@ describe Oystercard do
     subject.touch_in(station)
     expect(subject.entry_station).to eq station
   end
+
+  it 'stores exit station' do
+    subject.top_up(1)
+    subject.touch_in(station)
+    expect(subject.touch_out(station)).to eq station
+  end 
+
+  it 'has an empty list of journeys by default' do
+    expect(subject.journeys).to be_empty
+  end
+
+  let(:journey){ {entry_station: entry_station, exit_station: exit_station} }
+
+  let(:entry_station) { double :station }
+  let(:exit_station) { double :station }
+
+  it 'stores a journey' do
+    subject.top_up(1)
+    subject.touch_in(entry_station)
+    subject.touch_out(exit_station)
+    expect(subject.journeys).to include journey 
+  end 
 
 end
